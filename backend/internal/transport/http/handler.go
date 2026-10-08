@@ -21,13 +21,13 @@ type operation struct {
 
 // operations maps the {op} path segment to its domain function.
 var operations = map[string]operation{
-	"add":      {needsB: true,  fn: calculator.Add},
-	"subtract": {needsB: true,  fn: calculator.Subtract},
-	"multiply": {needsB: true,  fn: calculator.Multiply},
-	"divide":   {needsB: true,  fn: calculator.Divide},
-	"power":    {needsB: true,  fn: calculator.Power},
-	"percent":  {needsB: true,  fn: calculator.Percent},
-	"sqrt":     {needsB: false, fn: func(a, _ float64) (float64, error) {
+	"add":      {needsB: true, fn: calculator.Add},
+	"subtract": {needsB: true, fn: calculator.Subtract},
+	"multiply": {needsB: true, fn: calculator.Multiply},
+	"divide":   {needsB: true, fn: calculator.Divide},
+	"power":    {needsB: true, fn: calculator.Power},
+	"percent":  {needsB: true, fn: calculator.Percent},
+	"sqrt": {needsB: false, fn: func(a, _ float64) (float64, error) {
 		return calculator.Sqrt(a)
 	}},
 }

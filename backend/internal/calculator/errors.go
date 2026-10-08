@@ -15,8 +15,8 @@ var (
 	ErrInvalidPercentage  = errors.New("invalid percentage")
 
 	// Result errors
-	ErrResultOutOfRange  = errors.New("result out of range")
-	ErrUndefinedResult   = errors.New("undefined result")
-	ErrNonFiniteResult   = errors.New("result is not a finite number")
-	ErrOverflow          = errors.New("result overflow")
+	ErrResultOutOfRange = errors.New("result out of range")
+	ErrUndefinedResult  = errors.New("undefined result")
+	ErrNonFiniteResult  = errors.New("result is not a finite number")
+	ErrOverflow         = errors.New("result overflow")
 )
