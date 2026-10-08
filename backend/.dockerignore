@@ -1,0 +1,13 @@
+# Only what `go build` needs should reach the Docker build context.
+
+# Tests are not compiled into the binary.
+**/*_test.go
+
+# Local build outputs and coverage reports.
+*.exe
+*.out
+coverage.*
+
+# Docker's own files are not part of the app.
+Dockerfile
+.dockerignore
