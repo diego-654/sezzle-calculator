@@ -1,53 +1,53 @@
-# Sezzle Calculator
+# Calculadora Sezzle
 
 [![CI](https://github.com/diego-654/sezzle-calculator/actions/workflows/ci.yml/badge.svg)](https://github.com/diego-654/sezzle-calculator/actions/workflows/ci.yml)
 
-A full-stack calculator: a React + TypeScript frontend that calls a Go REST microservice.
-It supports add, subtract, multiply, divide, power, square root and percent.
+Calculadora full-stack: un frontend en React + TypeScript que consume un microservicio REST en Go.
+Soporta suma, resta, multiplicación, división, potencia, raíz cuadrada y porcentaje.
 
-## Project structure
+## Estructura del proyecto
 
 ```
 .
-├── backend/                     # Go microservice (standard library only)
-│   ├── cmd/server/              # entry point: config, HTTP server, graceful shutdown
+├── backend/                     # Microservicio en Go (solo librería estándar)
+│   ├── cmd/server/              # punto de entrada: configuración, servidor HTTP, apagado ordenado
 │   └── internal/
-│       ├── calculator/          # pure domain logic, returns (result, error)
-│       └── transport/http/      # handlers, JSON, error mapping, middleware
-├── frontend/                    # Vite + React + TypeScript, served by nginx in Docker
-├── docker-compose.yml           # runs both services together
-├── Makefile                     # shortcuts for tests, coverage and Docker
-└── .github/workflows/ci.yml     # lint, tests and build on every push and PR
+│       ├── calculator/          # lógica de dominio pura, devuelve (resultado, error)
+│       └── transport/http/      # handlers, JSON, mapeo de errores, middleware
+├── frontend/                    # Vite + React + TypeScript, servido por nginx en Docker
+├── docker-compose.yml           # levanta los dos servicios juntos
+├── Makefile                     # atajos para tests, cobertura y Docker
+└── .github/workflows/ci.yml     # lint, tests y build en cada push y PR
 ```
 
-## Requirements
+## Requisitos
 
 - Go 1.27+
 - Node.js 22+
-- Docker (optional, to run the full stack with one command)
-- make (optional; every target is a plain command you can also run by hand)
+- Docker (opcional, para levantar todo con un solo comando)
+- make (opcional; cada target es un comando simple que también se puede correr a mano)
 
-## Running the app
+## Cómo ejecutarlo
 
-### Option 1: Docker Compose (recommended)
+### Opción 1: Docker Compose (recomendada)
 
 ```bash
 docker compose up --build
 ```
 
-Open http://localhost:3000. nginx serves the frontend and forwards `/api` to the backend,
-which is not exposed to the host.
+Abre http://localhost:3000. nginx sirve el frontend y redirige `/api` al backend,
+que no se expone fuera de Docker.
 
-### Option 2: Run each part locally
+### Opción 2: cada parte por separado
 
-Backend (listens on port 8080, change it with the `PORT` environment variable):
+Backend (escucha en el puerto 8080; se cambia con la variable de entorno `PORT`):
 
 ```bash
 cd backend
 go run ./cmd/server
 ```
 
-Frontend, in a second terminal:
+Frontend, en otra terminal:
 
 ```bash
 cd frontend
@@ -55,44 +55,46 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173. The Vite dev server proxies `/api` to `http://localhost:8080`.
+Abre http://localhost:5173. El servidor de desarrollo de Vite redirige `/api` a `http://localhost:8080`.
 
-## Tests and coverage
+## Tests y cobertura
 
 ```bash
-make test        # backend + frontend unit tests
-make coverage    # same, with coverage reports
+make test        # tests unitarios de backend y frontend
+make coverage    # lo mismo, con informe de cobertura
 ```
 
-Without make:
+Sin make:
 
 ```bash
 cd backend && go test -cover ./...
 cd frontend && npm run coverage
 ```
 
-Current coverage: 94% for the HTTP layer and 65% for the calculator package (backend),
-and about 96% of statements in the frontend. The frontend HTML report is written to
-`frontend/coverage/`. CI runs the same checks plus `gofmt`, `go vet`, ESLint and a
-production build.
+Cobertura actual: 94% en la capa HTTP y 65% en el paquete `calculator` (backend), y cerca
+del 96% de las sentencias en el frontend. El informe HTML del frontend queda en
+`frontend/coverage/`. La CI corre los mismos chequeos, además de `gofmt`, `go vet`, ESLint
+y el build de producción.
 
 ## API
 
-All operations use `POST /api/v1/{operation}` with a JSON body.
+Todas las operaciones usan `POST /api/v1/{operación}` con un cuerpo JSON.
 
-| Operation  | Body             | Result         |
-|------------|------------------|----------------|
-| `add`      | `{"a": 2, "b": 3}` | `a + b`      |
-| `subtract` | `{"a": 2, "b": 3}` | `a - b`      |
-| `multiply` | `{"a": 2, "b": 3}` | `a * b`      |
-| `divide`   | `{"a": 6, "b": 3}` | `a / b`      |
-| `power`    | `{"a": 2, "b": 3}` | `a ^ b`      |
-| `percent`  | `{"a": 200, "b": 15}` | `b% of a` |
-| `sqrt`     | `{"a": 16}`       | `√a`          |
+| Operación  | Cuerpo                | Resultado      |
+|------------|-----------------------|----------------|
+| `add`      | `{"a": 2, "b": 3}`    | `a + b`        |
+| `subtract` | `{"a": 2, "b": 3}`    | `a - b`        |
+| `multiply` | `{"a": 2, "b": 3}`    | `a * b`        |
+| `divide`   | `{"a": 6, "b": 3}`    | `a / b`        |
+| `power`    | `{"a": 2, "b": 3}`    | `a ^ b`        |
+| `percent`  | `{"a": 200, "b": 15}` | `b% de a`      |
+| `sqrt`     | `{"a": 16}`           | `√a`           |
 
-`GET /health` returns `{"status":"ok"}` for health checks.
+`GET /health` devuelve `{"status":"ok"}` para los health checks.
 
-### Examples
+### Ejemplos
+
+Con curl (Linux, macOS o Git Bash):
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/add \
@@ -108,54 +110,62 @@ curl -X POST http://localhost:8080/api/v1/divide \
 # 422 {"error":{"code":"DIVISION_BY_ZERO","message":"division by zero"}}
 ```
 
-(With Docker Compose, use `http://localhost:3000/api/v1/...` instead.)
+Con PowerShell (Windows):
 
-### Errors
+```powershell
+Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/v1/add `
+  -ContentType "application/json" -Body '{"a": 2, "b": 3}'
+# result : 5
+```
 
-Every error has the same shape: `{"error": {"code": "...", "message": "..."}}`.
+Con Docker Compose, usa `http://localhost:3000/api/v1/...` en lugar del puerto 8080.
 
-| Status | When | Codes |
-|--------|------|-------|
-| 400 | Malformed request: invalid JSON, missing operand, unknown field, NaN/Infinity | `INVALID_INPUT`, `INVALID_OPERAND` |
-| 404 | Unknown operation | `INVALID_OPERATION` |
-| 405 | Wrong HTTP method | (plain response from Go's router) |
-| 422 | Valid request the math cannot answer | `DIVISION_BY_ZERO`, `NEGATIVE_SQUARE_ROOT`, `INVALID_EXPONENT`, `OVERFLOW`, `UNDEFINED_RESULT` |
-| 500 | Unexpected error (details are logged, not returned) | `INTERNAL_ERROR` |
+### Errores
 
-## Design decisions
+Todos los errores tienen la misma forma: `{"error": {"code": "...", "message": "..."}}`.
 
-- **One microservice, not one per operation.** The backend is a single stateless service with
-  its own `go.mod` and Dockerfile, a health check, configuration through environment variables,
-  structured logs (`log/slog`) and graceful shutdown on SIGTERM. Splitting every operation into
-  its own service would add network calls and deployment work with no benefit.
-- **Standard library only.** Go 1.22+ routing (`POST /api/v1/{op}`) covers everything this API
-  needs, so there is no framework to learn or update.
-- **Domain separated from HTTP.** `internal/calculator` knows nothing about HTTP and returns
-  errors instead of panicking. The HTTP layer maps each domain error to a status code in one
-  table, which keeps handlers small and makes both layers easy to test.
-- **Validation in both layers.** The frontend validates for a good user experience; the backend
-  validates again because it is the source of truth and can be called directly.
-- **Same origin, no CORS.** nginx (in Docker) and the Vite proxy (in development) send `/api` to
-  the backend, so the browser only talks to one origin.
-- **Edge cases.** NaN and ±Infinity inputs are rejected, overflowing results return `OVERFLOW`,
-  `0` raised to a negative power is a division by zero, a negative base with a fractional
-  exponent is rejected, and `-0` is normalized to `0`.
+| Estado | Cuándo | Códigos |
+|--------|--------|---------|
+| 400 | Petición mal formada: JSON inválido, falta un operando, campo desconocido, NaN/Infinity | `INVALID_INPUT`, `INVALID_OPERAND` |
+| 404 | Operación desconocida | `INVALID_OPERATION` |
+| 405 | Método HTTP incorrecto | (respuesta estándar del router de Go) |
+| 422 | Petición válida que la matemática no puede resolver | `DIVISION_BY_ZERO`, `NEGATIVE_SQUARE_ROOT`, `INVALID_EXPONENT`, `OVERFLOW`, `UNDEFINED_RESULT` |
+| 500 | Error inesperado (el detalle va al log, no a la respuesta) | `INTERNAL_ERROR` |
 
-### Numeric precision
+## Decisiones de diseño
 
-The service uses `float64`, so results follow IEEE 754: `0.1 + 0.2` returns
-`0.30000000000000004`. This is a known trade-off kept on purpose for a simple calculator. For
-money, I would switch to a decimal type (for example `shopspring/decimal`) or integer cents,
-and define a rounding rule.
+- **Un solo microservicio, no uno por operación.** El backend es un único servicio sin estado,
+  con su propio `go.mod` y Dockerfile, health check, configuración por variables de entorno,
+  logs estructurados (`log/slog`) y apagado ordenado al recibir SIGTERM. Separar cada operación
+  en un servicio solo agregaría llamadas de red y trabajo de despliegue sin ningún beneficio.
+- **Solo la librería estándar.** El router de Go 1.22+ (`POST /api/v1/{op}`) cubre todo lo que
+  necesita esta API, así que no hay un framework que aprender ni mantener.
+- **Dominio separado de HTTP.** `internal/calculator` no sabe nada de HTTP y devuelve errores en
+  lugar de hacer panic. La capa HTTP traduce cada error de dominio a un código de estado en una
+  sola tabla, así los handlers quedan pequeños y las dos capas son fáciles de testear.
+- **Validación en ambas capas.** El frontend valida para dar una buena experiencia de uso; el
+  backend valida de nuevo porque es la fuente de verdad y se puede llamar directamente.
+- **Mismo origen, sin CORS.** nginx (en Docker) y el proxy de Vite (en desarrollo) mandan `/api`
+  al backend, así que el navegador solo habla con un origen.
+- **Casos borde.** Se rechazan entradas NaN y ±Infinity, un resultado que desborda devuelve
+  `OVERFLOW`, `0` elevado a una potencia negativa es una división por cero, una base negativa
+  con exponente fraccionario se rechaza y `-0` se normaliza a `0`.
 
-## What I would do with more time
+### Precisión numérica
 
-- Decimal arithmetic and an explicit rounding policy.
-- More unit tests for the calculator package edge cases.
-- An OpenAPI spec for the API contract.
-- Rate limiting, Prometheus metrics and tracing.
-- Deployment to Kubernetes using the existing health check.
+El servicio usa `float64`, así que los resultados siguen IEEE 754: `0.1 + 0.2` devuelve
+`0.30000000000000004`. Es una concesión consciente para una calculadora simple. Para manejar
+dinero usaría un tipo decimal (por ejemplo `shopspring/decimal`) o centavos enteros, y
+definiría una regla de redondeo.
 
-## AI usage
+## Qué haría con más tiempo
 
-See [AI_USAGE.md](AI_USAGE.md) for how I used AI tools in this project.
+- Aritmética decimal y una política de redondeo explícita.
+- Más tests unitarios para los casos borde del paquete `calculator`.
+- Una especificación OpenAPI como contrato de la API.
+- Rate limiting, métricas con Prometheus y tracing.
+- Despliegue en Kubernetes aprovechando el health check existente.
+
+## Uso de IA
+
+En [AI_USAGE.md](AI_USAGE.md) explico cómo usé herramientas de IA en este proyecto.
