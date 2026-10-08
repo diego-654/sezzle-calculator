@@ -5,7 +5,7 @@ package httpapi
 // CalculateRequest is the body of POST /api/v1/{op}.
 type CalculateRequest struct {
 	A *float64 `json:"a"`
-	B *float64 `json:"b"` 
+	B *float64 `json:"b"`
 }
 
 // CalculateResponse is a successful response: {"result": 5}.

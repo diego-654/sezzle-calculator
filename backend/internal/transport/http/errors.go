@@ -9,7 +9,7 @@ import (
 	"github.com/diego-654/sezzle-calculator/backend/internal/calculator"
 )
 
-// apiError 
+// apiError
 type apiError struct {
 	status int    // HTTP status code
 	code   string // stable machine-readable code
