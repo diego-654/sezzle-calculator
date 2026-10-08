@@ -1,0 +1,10 @@
+# Only what `npm ci` and `npm run build` need should reach the Docker build context.
+
+# Installed and generated inside the image instead.
+node_modules
+dist
+coverage
+
+# Docker's own files are not part of the app.
+Dockerfile
+.dockerignore
