@@ -1,0 +1,19 @@
+# Runs the full stack with one command: docker compose up --build
+# Then open http://localhost:3000
+services:
+  backend:
+    build: ./backend
+    environment:
+      PORT: "8080"
+    # No published ports: only nginx talks to the backend, over the
+    # private network that compose creates for these services.
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:8080" # host:container
+    # Start the backend first so nginx can resolve the "backend" name.
+    depends_on:
+      - backend
+    restart: unless-stopped
