@@ -5,9 +5,10 @@ Aquí explico cómo usé la IA en este proyecto, qué decidí yo y dónde cambi�
 
 ## Contexto
 
-Antes de este proyecto no había usado Go. Lo elegí igual porque es el lenguaje preferido para
-el puesto, y usé un asistente de IA (Claude) como tutor para aprenderlo mientras construía.
-[Con tus palabras: por qué elegiste Go y cómo te sentías al empezar.]
+Antes de este proyecto no había trabajado con Go, pero decidí usarlo porque es el lenguaje
+preferido para el puesto al que postulo. Al principio me sentía un poco perdido con su sintaxis,
+su manejo de errores y la forma de organizar los paquetes, así que usé un asistente de IA (Claude)
+como tutor para aprender mientras desarrollaba el proyecto.
 
 ## Cómo la usé
 
@@ -20,24 +21,29 @@ el puesto, y usé un asistente de IA (Claude) como tutor para aprenderlo mientra
   `calculator.go` encontró que un NaN podía pasar como resultado válido, que `-0` se devolvía
   como `-0` y que los archivos no estaban formateados con `gofmt`. Yo hice las correcciones.
 - **Tests:** la IA abrió el pull request #2 con los tests de los handlers HTTP. Lo revisé y lo
-  fusioné. [Cuenta qué revisaste antes de fusionarlo.]
+  fusioné. Antes de hacerlo revisé qué comportamiento validaba cada test, que los casos fueran
+  coherentes con lo esperado, que se comprobaran los códigos de estado HTTP y el manejo de
+  errores, y que los tests pasaran.
 - **Documentación:** la IA redactó un borrador del README a partir del código, y yo lo revisé y edité.
 
 ## Decisiones que tomé (y sugerencias que cambié o rechacé)
 
-- **Librería estándar en lugar de un framework como Gin:** menos dependencias, y el router de
-  Go 1.22+ cubre todo lo que necesita esta API.
+- **Librería estándar en lugar de un framework como Gin:** un framework podía simplificar algunas
+  tareas, pero para una calculadora con pocos endpoints no justificaba la dependencia. Preferí una
+  solución sencilla y entender cómo funciona el servidor HTTP nativo de Go, cuyo router (1.22+)
+  cubre todo lo que necesita esta API.
 - **Errores en lugar de panics:** las funciones de dominio devuelven `(resultado, error)`, así la
   capa HTTP puede traducir cada error a un código de estado claro.
 - **Un solo microservicio, no uno por operación:** dividirlo sería sobreingeniería.
 - **`float64` en lugar de una librería decimal:** lo mantuve simple a propósito y está
   documentado en el README.
-- [Agrega alguna sugerencia que rechazaste o cambiaste, y por qué.]
 
 ## Qué verifiqué yo
 
-Corrí cada cambio en mi máquina antes de hacer commit (`go test`, `npm test`), y la CI revisa
-formato, vet, lint, tests y build en cada push. [Agrega lo que hayas comprobado aparte.]
+Corrí los tests en mi máquina antes de cada commit (`go test`, `npm test`) para comprobar que los
+cambios funcionaban como esperaba. También probé el backend dentro de Docker y revisé el estado y
+los logs de los contenedores para confirmar que el servidor seguía en ejecución. Además, la CI
+revisa formato, vet, lint, tests y build en cada push.
 
 ## Prompts principales
 
@@ -90,4 +96,8 @@ aprendí que un buen prompt dice el contexto, las restricciones y qué formato d
 
 ## Qué aprendí
 
-[2 o 3 líneas con tus palabras: qué aprendiste de Go, de testing o del flujo de trabajo.]
+Aprendí los fundamentos de Go, sobre todo su manejo explícito de errores, la organización de
+paquetes y la escritura de tests unitarios. También entendí mejor cómo separar la lógica de negocio
+de la API HTTP y cómo organizar el desarrollo con ramas, commits y pull requests. Y, sobre todo,
+aprendí a usar la IA como herramienta de apoyo: revisar sus propuestas y entender el código antes
+de incorporarlo al proyecto.
