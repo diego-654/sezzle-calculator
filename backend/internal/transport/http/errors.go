@@ -30,11 +30,8 @@ var errorMappings = []struct {
 	{calculator.ErrDivisionByZero, apiError{http.StatusUnprocessableEntity, "DIVISION_BY_ZERO"}},
 	{calculator.ErrNegativeSquareRoot, apiError{http.StatusUnprocessableEntity, "NEGATIVE_SQUARE_ROOT"}},
 	{calculator.ErrInvalidExponent, apiError{http.StatusUnprocessableEntity, "INVALID_EXPONENT"}},
-	{calculator.ErrInvalidPercentage, apiError{http.StatusUnprocessableEntity, "INVALID_PERCENTAGE"}},
 	{calculator.ErrOverflow, apiError{http.StatusUnprocessableEntity, "OVERFLOW"}},
-	{calculator.ErrResultOutOfRange, apiError{http.StatusUnprocessableEntity, "RESULT_OUT_OF_RANGE"}},
 	{calculator.ErrUndefinedResult, apiError{http.StatusUnprocessableEntity, "UNDEFINED_RESULT"}},
-	{calculator.ErrNonFiniteResult, apiError{http.StatusUnprocessableEntity, "NON_FINITE_RESULT"}},
 }
 
 // writeError sends err as a JSON error response with the right status code.

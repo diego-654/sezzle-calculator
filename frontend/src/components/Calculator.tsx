@@ -3,14 +3,16 @@ import type { FormEvent } from 'react'
 import { calculate } from '../api/calculator'
 import { ApiError, type Operation } from '../api/types'
 
-const OPERATIONS: { value: Operation; label: string }[] = [
-  { value: 'add', label: 'Add (a + b)' },
-  { value: 'subtract', label: 'Subtract (a − b)' },
-  { value: 'multiply', label: 'Multiply (a × b)' },
-  { value: 'divide', label: 'Divide (a ÷ b)' },
-  { value: 'power', label: 'Power (a ^ b)' },
-  { value: 'sqrt', label: 'Square root (√a)' },
-  { value: 'percent', label: 'Percent (b% of a)' },
+// OPERATIONS is the only place the UI needs to change to add an operation.
+// needsB is false for unary operations, which hide the second input.
+const OPERATIONS: { value: Operation; label: string; needsB: boolean }[] = [
+  { value: 'add', label: 'Add (a + b)', needsB: true },
+  { value: 'subtract', label: 'Subtract (a − b)', needsB: true },
+  { value: 'multiply', label: 'Multiply (a × b)', needsB: true },
+  { value: 'divide', label: 'Divide (a ÷ b)', needsB: true },
+  { value: 'power', label: 'Power (a ^ b)', needsB: true },
+  { value: 'sqrt', label: 'Square root (√a)', needsB: false },
+  { value: 'percent', label: 'Percent (b% of a)', needsB: true },
 ]
 
 // parseNumber returns the input as a finite number, or null if it is not one.
@@ -29,7 +31,7 @@ export function Calculator() {
   const [loading, setLoading] = useState(false)
 
   // Derived values: computed on every render instead of stored in state.
-  const needsB = operation !== 'sqrt'
+  const needsB = OPERATIONS.find((op) => op.value === operation)?.needsB ?? true
   const numA = parseNumber(a)
   const numB = needsB ? parseNumber(b) : null
   const isValid = numA !== null && (!needsB || numB !== null)

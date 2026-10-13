@@ -151,6 +151,22 @@ Todos los errores tienen la misma forma: `{"error": {"code": "...", "message": "
   `OVERFLOW`, `0` elevado a una potencia negativa es una división por cero, una base negativa
   con exponente fraccionario se rechaza y `-0` se normaliza a `0`.
 
+### Cómo agregar una operación
+
+Ejemplo: agregar `modulo` (resto de `a / b`).
+
+1. **Dominio:** una función en `backend/internal/calculator/calculator.go` con la misma forma que
+   las demás (`func Modulo(a, b float64) (float64, error)`), más su test. Si tiene un error
+   nuevo, se declara en `errors.go`.
+2. **HTTP:** una línea en el mapa `operations` de `backend/internal/transport/http/handler.go`
+   (`"modulo": {needsB: true, fn: calculator.Modulo}`). La ruta `POST /api/v1/{op}` ya existe,
+   así que no hay que tocar el router. Si hay error nuevo, una línea en `errorMappings`.
+3. **Frontend:** agregar `'modulo'` al tipo `Operation` en `frontend/src/api/types.ts` y una
+   entrada en la lista `OPERATIONS` de `Calculator.tsx`. El formulario se arma solo a partir
+   de esa lista.
+
+No hay que crear handlers, rutas ni componentes nuevos.
+
 ### Precisión numérica
 
 El servicio usa `float64`, así que los resultados siguen IEEE 754: `0.1 + 0.2` devuelve
